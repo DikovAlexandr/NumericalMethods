@@ -13,7 +13,7 @@ double getEpsilonDouble() {
     return eps;
 };
 // Машинный эпсилон float
-double getEpsilonFloat() {
+float getEpsilonFloat() {
 
     float eps = 0.5;
     while (1.0 + eps != 1.0) {
@@ -24,34 +24,38 @@ double getEpsilonFloat() {
 // Машинный ноль double
 double getMachineZeroDouble() {
     double zero = 1.0, save;
-    while (zero * 0.5 != 0) {
+    do {
         save = zero;
-        zero *= 0.5;
-    }
+        zero /= 2;
+    } while (zero / 2 != 0);
     return save;
 };
 // Машинный ноль float
-double getMachineZeroFloat() {
+float getMachineZeroFloat() {
     float zero = 1.0, save;
-    while (zero * 0.5 != 0) {
+    do {
         save = zero;
-        zero *= 0.5;
-    }
+        zero /= 2;
+    } while (zero / 2 != 0);
     return save;
 };
 // Бесконечность double
 double getInfinityDouble() {
-    double inf = 1.0;
-    while (!isinf(inf * 2)) {
-        inf *= 2;
+    double inf = 1.0, k = 2.0;
+    while (!isinf(inf * k)) {
+        inf *= k;
+        if (isinf(inf * k)) k = 1 + (k - 1)/2;
+        if (fabs(1-k)<0.01) break;
     }
     return inf;
 };
 // Бесконечность float
-double getInfinityFloat() {
-    float inf = 1.0;
-    while (!isinf(inf * 2)) {
-        inf *= 2;
+float getInfinityFloat() {
+    float inf = 1.0, k = 2.0;
+    while (!isinf(inf * k)) {
+        inf *= k;
+        if (isinf(inf * k)) k = 1 + (k - 1)/2;
+        if (fabs(1-k)<0.01) break;
     }
     return inf;
 };
