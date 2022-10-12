@@ -3,18 +3,22 @@
 #include <cmath>
 // программа которая вычисляет производную первого и второго порядка численно и аналитически от произвольной функции
 using namespace std;
+
 // Исходная функция
 double f(double x) {
     return exp(-x) * pow(x, 2);
 }
+
 // Аналитическая первая производная
 double f1(double x) {
     return (2 * x - pow(x, 2)) * exp(-x);
 }
+
 // Аналитическая вторая производная
 double f2(double x) {
     return (2 - 4 * x + pow(x, 2)) * exp(-x);
 }
+
 // Численная первая производная
 double diff1(double x, double h) {
     double fl, fr, fc;
@@ -24,6 +28,7 @@ double diff1(double x, double h) {
     fc = (f(x + h) - f(x - h)) / (2 * h); // центральная
     return fc;
 }
+
 // Численная вторая производная
 double diff2(double x, double h) {
     double f2;
@@ -31,6 +36,7 @@ double diff2(double x, double h) {
     f2 = (f(x + h) - 2 * f(x) + f(x - h)) / (h * h);
     return f2;
 }
+
 int main() {
     ofstream fout;
     fout.open("plotA.txt");

@@ -12,6 +12,7 @@ double getEpsilonDouble() {
     }
     return eps;
 };
+
 // Машинный эпсилон float
 float getEpsilonFloat() {
 
@@ -21,6 +22,7 @@ float getEpsilonFloat() {
     }
     return eps;
 };
+
 // Машинный ноль double
 double getMachineZeroDouble() {
     double zero = 1.0, save;
@@ -30,6 +32,7 @@ double getMachineZeroDouble() {
     } while (zero / 2 != 0);
     return save;
 };
+
 // Машинный ноль float
 float getMachineZeroFloat() {
     float zero = 1.0, save;
@@ -39,26 +42,29 @@ float getMachineZeroFloat() {
     } while (zero / 2 != 0);
     return save;
 };
+
 // Бесконечность double
 double getInfinityDouble() {
     double inf = 1.0, k = 2.0;
     while (!isinf(inf * k)) {
         inf *= k;
-        if (isinf(inf * k)) k = 1 + (k - 1)/2;
-        if (fabs(1-k)<0.01) break;
+        if (isinf(inf * k)) k = 1 + (k - 1) / 2;
+        if (fabs(1 - k) < 0.01) break;
     }
     return inf;
 };
+
 // Бесконечность float
 float getInfinityFloat() {
     float inf = 1.0, k = 2.0;
     while (!isinf(inf * k)) {
         inf *= k;
-        if (isinf(inf * k)) k = 1 + (k - 1)/2;
-        if (fabs(1-k)<0.01) break;
+        if (isinf(inf * k)) k = 1 + (k - 1) / 2;
+        if (fabs(1 - k) < 0.01) break;
     }
     return inf;
 };
+
 int main() {
     cout << "Machine zero double " << getMachineZeroDouble() << " // " << numeric_limits<double>::denorm_min() << endl
          << "Machine zero float " << getMachineZeroFloat() << " // " << numeric_limits<float>::denorm_min() << endl
