@@ -3,22 +3,23 @@
 
 using namespace std;
 
-///@brief define a and b semi-axes
+///@brief define A and B semi-axes and inner circle radius R 
 #define A 1
 #define B 0.5
+#define R 0.5
 
 double f(double x, double y) {
     return pow(x, 2) * pow(y, 2);
 }
 
 double outerLimits(double x) {
-    return sqrt(1 - pow(x / A, 2)) * B;
-    //return sqrt(1 - pow(x, 2));
+    return sqrt(1 - pow(x / B, 2)) * A;
 }
 
 double innerLimits(double x) {
-    return sqrt(pow(B, 2) - pow(x, 2));
-    //return 0;
+    if (fabs(x) > R)
+        return 0;
+    else return sqrt(pow(B, 2) - pow(x, 2));
 }
 /// @brief Gaussian 6-point integral, used in QC6 for double integral
 /// @param c lower limit
