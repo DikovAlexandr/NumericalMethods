@@ -4,8 +4,8 @@
 using namespace std;
 
 ///@brief define A and B semi-axes and inner circle radius R 
-#define A 1
-#define B 0.5
+#define A 0.5
+#define B 1
 #define R 0.5
 
 double f(double x, double y) {
@@ -13,13 +13,13 @@ double f(double x, double y) {
 }
 
 double outerLimits(double x) {
-    return sqrt(1 - pow(x / B, 2)) * A;
+    return sqrt(1 - pow(x / A, 2)) * B;
 }
 
 double innerLimits(double x) {
     if (fabs(x) > R)
         return 0;
-    else return sqrt(pow(B, 2) - pow(x, 2));
+    else return sqrt(pow(R, 2) - pow(x, 2));
 }
 /// @brief Gaussian 6-point integral, used in QC6 for double integral
 /// @param c lower limit
@@ -112,8 +112,8 @@ double QC10(double a, double b) {
 }
 
 int main() {
-    cout << "6-point value: " << QC6(-B, B) << endl;
-    cout << "8-point value: " << QC8(-B, B) << endl;
-    cout << "10-point value: " << QC10(-B, B) << endl;
+    cout << "6-point value: " << QC6(-A, A) << endl;
+    cout << "8-point value: " << QC8(-A, A) << endl;
+    cout << "10-point value: " << QC10(-A, A) << endl;
     return 0;
 }
