@@ -1,14 +1,21 @@
+
 #include <iostream>
 #include <cmath>
 
 using namespace std;
 
-///@brief define A and B semi-axes and inner circle radius R 
+///@brief define A and B semi-axes, inner circle radius R and angle of rotate PHI
 #define A 0.5
 #define B 1
 #define R 0.5
+//#define PHI M_PI/4
 
 double f(double x, double y) {
+    #ifdef PHI
+    double x1 = x * cos(PHI) - y * sin(PHI);
+    double y1 = y * cos(PHI) + x * sin(PHI);
+    x = x1; y = y1;
+    #endif
     return pow(x, 2) * pow(y, 2);
 }
 

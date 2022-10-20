@@ -8,7 +8,7 @@
 using namespace std;
 
 double f(double x) {
-    return sin(x / 2);
+    return sin(exp(x / 2)) - exp(-x);
 }
 
 void dichotomy(double a, double b, double eps, int &n) {
@@ -33,8 +33,8 @@ void secant(double a, double b, double eps, int &n) {
     //cout << a << " " << b << " " << (fabs(b - a) > eps) << endl;
     if (fabs(b - a) > eps) {
         k = (f(b) - f(a)) / (b - a);
-        c = (k * a - f(a)) / k;
-        if (f(a) * f(c) < 0 && (f(b) * f(c) < 0)) {
+        c = a - f(a) / k;
+        if (f(a) * f(c) <= 0 && (f(b) * f(c) <= 0)) {
             if (fabs(a - c) < fabs(b - c)) secant(a, c, eps, n);
             else secant(c, b, eps, n);
         } else if (f(a) * f(c) < 0) {
@@ -48,8 +48,8 @@ void secant(double a, double b, double eps, int &n) {
 }
 
 void quadraticInterpl(double x_, double _x, double eps, int n) {
-    n++;
     if (fabs(x_ - _x) > eps) {
+        n++;
         double h = fabs(x_ - _x) / 2;
         double x0 = (x_ + _x) / 2;
         double a = (f(x_) - 2 * f(x0) + f(_x)) / (2 * pow(h, 2));
