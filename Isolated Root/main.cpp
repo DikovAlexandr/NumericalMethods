@@ -47,20 +47,43 @@ void secant(double a, double b, double eps, int &n) {
              << endl;
 }
 
-void quadraticInterpl(double x_, double _x) {
-    double h = fabs(x_ - _x) / 2;
-    double x0 = (x_ + _x) / 2;
-    double a = (f(x_) - 2 * f(x0) + f(_x)) / (2 * pow(h, 2));
-    double b = (f(x_) - f(_x)) / (2 * h);
-    double c = f(x0);
-    double d = pow(b, 2) - 4 * a * c;
-    cout << a << " " << b << " " << c << endl;
-    cout << "Quadratic interpolation root of the equation x = " << (-b + sqrt(d)) / (2 * a) << ", for h = " << h
-         << endl;
+void quadraticInterpl(double x_, double _x, double eps, int n) {
+    n++;
+    if (fabs(x_ - _x) > eps) {
+        double h = fabs(x_ - _x) / 2;
+        double x0 = (x_ + _x) / 2;
+        double a = (f(x_) - 2 * f(x0) + f(_x)) / (2 * pow(h, 2));
+        double b = (f(x_) - f(_x)) / (2 * h);
+        double c = f(x0);
+        double d = pow(b, 2) - 4 * a * c;
+        double x1 = x0 + (-b + sqrt(d)) / (2 * a);
+        double x2 = x0 + (-b - sqrt(d)) / (2 * a);
+        double x = 0;
+        //cout << x_ << " " << _x << " " << endl;
+        if (x_ < x2 && x2 < _x) {
+            x = x2;
+            if (f(x_) * f(x) <= 0) {
+                quadraticInterpl(x_, x, eps, n);
+            } else if (f(x) * f(_x) < 0) {
+                quadraticInterpl(x, _x, eps, n);
+            }
+        }
+        if (x_ < x1 && x1 < _x) {
+            x = x1;
+            if (f(x_) * f(x) <= 0) {
+                quadraticInterpl(x_, x, eps, n);
+            } else if (f(x) * f(_x) < 0) {
+                quadraticInterpl(x, _x, eps, n);
+            }
+        }
+    } else if (fabs(x_ - _x) <= eps)
+        cout << "Quadratic Interpolation root of the equation x = " << (x_ + _x) / 2 << ", for E = " << eps
+             << ", iterations n = " << n
+             << endl;
 }
 
 int main() {
-    double xLeft, xRight, epsilon = 0.0001 /*numeric_limits<double>::epsilon()*/, h;
+    double xLeft, xRight, epsilon = 0.0000001 /*numeric_limits<double>::epsilon()*/, h;
     int n;
     cout << "Enter endpoints" << endl;
     cin >> xLeft >> xRight;
@@ -68,7 +91,6 @@ int main() {
     dichotomy(xLeft, xRight, epsilon, n);
     n = 0;
     secant(xLeft, xRight, epsilon, n);
-    h = 0.01;
     n = 0;
-    quadraticInterpl(xLeft, xRight);
+    quadraticInterpl(xLeft, xRight, epsilon, n);
 }
