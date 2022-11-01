@@ -11,14 +11,50 @@ using namespace std;
 double f(double x) {
     // return (pow(x, 4) + 5 * pow(x, 3) + 2 * pow(x, 2) + 15 * x + 2);
     // return exp(-x);
-    return x;
+    return sin(x);
+}
+
+// Вторая производная
+double d2_f(double x) {
+    // return (pow(x, 4) + 5 * pow(x, 3) + 2 * pow(x, 2) + 15 * x + 2);
+    // return exp(-x);
+    return -sin(x);
+}
+
+// Четвертая производная
+double d4_f(double x) {
+    // return (pow(x, 4) + 5 * pow(x, 3) + 2 * pow(x, 2) + 15 * x + 2);
+    // return exp(-x);
+    return sin(x);
 }
 
 // Аналитический интеграл
 double analyticIntegral(double a, double b) {
     // return pow(b, 5) / 5 + 5 * pow(b, 4) / 4 + 2 * pow(b, 3) / 3 + 15 * pow(b, 2) / 2 + 2 * b;
     // return 1 - exp(-3);
-    return 0.5;
+    return 2;
+}
+
+// Максимум второй производной на промежутке интегрирования
+double max_d2_f(double a, double b, double h) {
+    double max = 0;
+    double n; // задаём число разбиений n
+    n = (b - a) / h;
+    for (int i = 0; i <= n; ++i) {
+        if (max < abs(d2_f(a + h * i))) max = abs(d2_f(a + h * i));
+    }
+    return max;
+}
+
+// Максимум четвертой производной на промежутке интегрирования
+double max_d4_f(double a, double b, double h) {
+    double max = 0;
+    double n; // задаём число разбиений n
+    n = (b - a) / h;
+    for (int i = 0; i <= n; ++i) {
+        if (max < abs(d4_f(a + h * i))) max = abs(d4_f(a + h * i));
+    }
+    return max;
 }
 
 // Метод центральных прямоугольников
@@ -66,55 +102,61 @@ double simpsonSum(double a, double b, double h) {
     integral = h * (f(a) + f(b)) / 6.0;
     for (int i = 1; i <= n; i++)
         integral = integral + 4.0 / 6.0 * h * f(a + h * (i - 0.5));
-    for (int i = 1; i <= n - 1; i++)
+    for (int i = 1; i <= n; i++)
         integral = integral + 2.0 / 6.0 * h * f(a + h * i);
     return integral;
 }
 
-// Оценка остаточных членов
-/*
+//////////////////////////////
+// Оценка остаточных членов //
+//////////////////////////////
+
 // Теоретическая погрешность метода прямоугольников
-double midpointAccuracy(double h) {
-    return pow(h, 3) / 6.0;
+double midpointAccuracy(double a, double b, double h) {
+    return pow(h, 2) * (b - a) * max_d2_f(a, b, h) / 12.0;
 }
 
 // Теоретическая погрешность метода трапеций
-double trapezoidalAccuracy(double h) {
-    return pow(h, 2) * (b - a) /12.0 * maxF2;
-    // где maxF4 это максимальная величина второй производной от f
+double trapezoidalAccuracy(double a, double b, double h) {
+    return pow(h, 2) * (b - a) * max_d2_f(a, b, h) / 6.0;
+    // где max_d2_f это максимальная величина второй производной от f
 }
 
 // Теоретическая погрешность метода трех восьмых
-double threeEighthsAccuracy(double h) {
-    return pow(h, 5) * maxF4 * 3.0 / 80.0;
-    // где maxF4 это максимальная величина четвертой производной от f
+double threeEighthsAccuracy(double a, double b, double h) {
+    return pow(h, 4) * (b - a) * max_d4_f(a, b, h) / 80.0;
+    // где max_d4_f это максимальная величина четвертой производной от f
 }
 
 // Теоретическая погрешность метода Симпсона
-double simpsonAccuracy(double h) {
-    return pow(h, 4) * (b - a) * maxF4 / 180;
-    // где maxF4 это максимальная величина четвертой производной от f
+double simpsonAccuracy(double a, double b, double h) {
+    return pow(h, 4) * (b - a) * max_d4_f(a, b, h) / 180.0;
+    // где max_d4_f это максимальная величина четвертой производной от f
 }
-*/
+
 int main() {
     double a = 0.0;
-    double b = 1.0;
+    double b = M_PI;
     double h = 0.001;
-    /*
+
     // Настройки точности вывода
-    const auto digits = 8;
+    const auto digits = 10;
     cout << setw(digits);
     cout << fixed << std::setprecision(digits);
-    */
+
     // Результаты вычислений
-    cout << "Midpoint sum " << midpointSum(a, b, h) << " different from analytic  "
-         << fabs(analyticIntegral(a, b) - midpointSum(a, b, h)) << endl;
+    cout << "Midpoint sum " << midpointSum(a, b, h) << " different from analytic "
+         << fabs(analyticIntegral(a, b) - midpointSum(a, b, h))
+         << " meanwhile theoretical accuracy " << midpointAccuracy(a, b, h) << endl;
     cout << "Trapezoidal sum " << trapezoidalSum(a, b, h) << " different from analytic "
-         << fabs(analyticIntegral(a, b) - trapezoidalSum(a, b, h)) << endl;
+         << fabs(analyticIntegral(a, b) - trapezoidalSum(a, b, h))
+         << " meanwhile theoretical accuracy " << trapezoidalAccuracy(a, b, h) << endl;
     cout << "Three eighths sum " << threeEighthSum(a, b, h) << " different from analytic "
-         << fabs(analyticIntegral(a, b) - threeEighthSum(a, b, h)) << endl;
+         << fabs(analyticIntegral(a, b) - threeEighthSum(a, b, h))
+         << " meanwhile theoretical accuracy " << threeEighthsAccuracy(a, b, h) << endl;
     cout << "Simpson sum " << simpsonSum(a, b, h) << " different from analytic "
-         << fabs(analyticIntegral(a, b) - simpsonSum(a, b, h)) << endl;
+         << fabs(analyticIntegral(a, b) - simpsonSum(a, b, h))
+         << " meanwhile theoretical accuracy " << simpsonAccuracy(a, b, h) << endl;
     cout << "Analytic result " << analyticIntegral(a, b) << endl;
     return 0;
 }
