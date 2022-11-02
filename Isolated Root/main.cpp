@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <conio.h>
+#include <tgmath.h>
 #include <limits>
 #include <vector>
 
@@ -10,16 +11,16 @@ using namespace std;
 
 // Исследуемая функция
 double f(double x) {
-    //return sin(exp(x / 2.0)) - exp(-x) + 1;
-    return  2 - x - sin(x);
-    //return pow(x, 2) - 1;
+    return sin(exp(x / 2.0)) - exp(-x) + 1;
+    // return  2 - x - sin(x);
+    // return pow(x, 2) - 1;
 }
 
 // Производная исследуемой функции
 double df(double x) {
-    //return (1.0 / 2.0) * cos(exp(x / 2.0)) * exp(x / 2.0) + exp(-x);
-    return -1 - cos(x);
-    //return 2 * x;
+    return (1.0 / 2.0) * cos(exp(x / 2.0)) * exp(x / 2.0) + exp(-x);
+    // return -1 - cos(x);
+    // return 2 * x;
 }
 
 // Метод дихотомии
@@ -111,8 +112,8 @@ void quadraticInterplWithOutRec(double x_, double _x, double eps, int n) {
         double d = pow(b, 2) - 4.0 * a * c;
         double x1 = x0 + (-b + sqrt(d)) / (2.0 * a);
         double x2 = x0 + (-b - sqrt(d)) / (2.0 * a);
-        cout << "interval " <<  x_ << " " << _x << endl;
-        cout << "roots " << x1 << " " << x2 << endl;
+        // cout << "interval " <<  x_ << " " << _x << endl;
+        // cout << "roots " << x1 << " " << x2 << endl;
         if (x_ <= x2 && x2 <= _x) {
             x = x2;
             if (f(x_) * f(x) <= 0) {
@@ -197,9 +198,9 @@ int main() {
     cout << fixed << std::setprecision(digits);
     // Применение методов
     n = 0;
-    /*dichotomy(xLeft, xRight, epsilon, n);*/
-    /*n = 0;
-    secant(xLeft, xRight, epsilon, n);*/
+    dichotomy(xLeft, xRight, epsilon, n);
+    n = 0;
+    secant(xLeft, xRight, epsilon, n);
     n = 0;
     //quadraticInterpl(xLeft, xRight, epsilon, n);
     n = 0;
