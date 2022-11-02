@@ -39,13 +39,13 @@ double diff2(double x, double h) {
 
 int main() {
     ofstream fout;
-    fout.open("plotA.txt");
+    fout.open("..\\..\\NumericalMethods\\Numerical derivative\\plotA.csv");
     double x, a, b, h, i;
     cout << "Enter range and step:\n";
     //cin >> a >> b >> h;
     a = 0;
     b = 1;
-    h = 0.000001;
+    h = 0.001;
     i = a;
     while (i < b) {
         fout << i << " " << f(i) << " " << f1(i) << " " << diff1(i, h) << endl;
@@ -53,7 +53,7 @@ int main() {
     }
     fout.close();
     i = a;
-    fout.open("plotB.txt");
+    fout.open("..\\..\\NumericalMethods\\Numerical derivative\\plotB.csv");
     while (i < b) {
         fout << i << " " << f(i) << " " << f2(i) << " " << diff2(i, h) << endl;
         i += h;

@@ -5,11 +5,11 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(NumericalMethods
         #"Double integer/smokedout.cpp"
-        "Integral/main.cpp"
+        #"Integral/main.cpp"
         #"Isolated Root/main.cpp"
         #"Lagrange's polinom/main.cpp"
         #"Machine zero, epsilon and iInfinity/Float double properties.cpp"
-        #"Numerical derivative/main.cpp"
+        "Numerical derivative/main.cpp"
         #"Potencial of field/main.cpp"
 		#"Exponent/main.cpp"
         )
