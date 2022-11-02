@@ -5,12 +5,12 @@
 
 using namespace std;
 
-// Раскладываемая функция
+// РСЃСЃР»РµРґСѓРµРјР°СЏ С„СѓРЅРєС†РёСЏ
 double f(double x) {
     return sin(1 / (x + 1));
 }
 
-// Функция нахождения L(x)
+// РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ L(x)
 double lagrange(const double *x, const double *y, int n, double _x) {
     double result = 0.0;
     for (int i = 0; i < n; i++) {
@@ -24,10 +24,10 @@ double lagrange(const double *x, const double *y, int n, double _x) {
     return result;
 }
 
-// Исполнение программы
+// РўРµР»Рѕ С„СѓРЅРєС†РёРё
 int main() {
     ofstream fout;
-    fout.open("plot.txt");
+    fout.open(R"(..\\..\\NumericalMethods\\Lagrange's polinom\\plot.csv)");
     int n = 10;
     int N = n * 100;
     double x[n], y[n], L[N];
