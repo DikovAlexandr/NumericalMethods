@@ -6,13 +6,13 @@
 using namespace std;
 
 double f_1(double x, double r, double o) {
-    return 4.0 / 3.0 * M_PI * (x * x) * exp(-x) / r +
-           4.0 / 15.0 * M_PI * (x * x * x * x) * exp(-x) / (r * r * r) * (3 * cos(o) * cos(o) - 1);
+    return 4.0 / 3.0 * M_PI * pow(x, 2) * exp(-x) / r +
+           4.0 / 15.0 * M_PI * pow(x, 4) * exp(-x) / pow(r, 3) * (3 * pow(cos(o), 2) - 1);
 }
 
 double f_2(double x, double r, double o) {
     return 4.0 / 3.0 * M_PI * (x + r) * exp(-r) +
-           4.0 / 15.0 * M_PI * exp(-r) * r * r / (x + r) * (3 * cos(o) * cos(o) - 1);
+           4.0 / 15.0 * M_PI * exp(-r) * pow(r, 2) / (x + r) * (3 * pow(cos(o), 2) - 1);
 }
 
 double simpson(double a, double b, double r, double o) {
@@ -29,27 +29,12 @@ double simpson(double a, double b, double r, double o) {
 }
 
 double potential(double r, double o) {
-    double I1, I2, I3, x1, x2, x3, x4, x5, x6, x7, w1, w2, w3, w4, w5, w6, w7, fi;
-    x1 = 0.193044;
-    x2 = 1.026665;
-    x3 = 2.567877;
-    x4 = 4.900353;
-    x5 = 8.182153;
-    x6 = 12.734180;
-    x7 = 19.395728;
-
-    w1 = 0.4093190;
-    w2 = 0.4218313;
-    w3 = 0.1471263;
-    w4 = 0.02063351;
-    w5 = 0.001074010;
-    w6 = 0.00001586546;
-    w7 = 0.00000003170315;
+    double I1, I2, I3, x2, x3, x4, x5, x6, x7, w1, w2, w3, w4, w5, w6, w7, fi;
+    double x[7] = {0.193044, 1.026665, 2.567877, 4.900353, 8.182153, 12.734180, 19.395728};
+    double w[7] = {0.4093190, 0.4218313, 0.147126, 0.02063351, 0.001074010, 0.00001586546, 0.00000003170315};
     I1 = simpson(0.0, r, r, o);
-    I2 = w1 * f_2(x1, r, o) + w2 * f_2(x2, r, o) + w3 * f_2(x3, r, o) + w4 * f_2(x4, r, o) + w5 * f_2(x5, r, o) +
-         w6 * f_2(x6, r, o) + w7 * f_2(x7, r, o);
-//    cout << "I1: " << I1 << endl;
-//    cout << "I2: " << I2 << endl;
+    I2 = w[0] * f_2(x[0], r, o) + w[1] * f_2(x[1], r, o) + w[2] * f_2(x[2], r, o) + w[3] * f_2(x[3], r, o) + w[4] * f_2(x[4], r, o) +
+         w[5] * f_2(x[5], r, o) + w[6] * f_2(x[6], r, o);
     fi = (I1 + I2) * 3.0 / (8.0 * M_PI);
     return fi;
 }
