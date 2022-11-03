@@ -124,6 +124,14 @@ double QC10(double a, double b) {
 }
 
 int main() {
+    #ifdef PHI
+    cout << "Analytical answer: " << 85 * M_PI / 3072 << endl;
+    #endif
+	#ifndef PHI
+	if (A && B)
+		cout << "Analytical answer: " << 7 * M_PI / 192 << endl;
+	else cout << "Analytical answer: " << M_PI / 24 << endl;;
+	#endif
     cout << "6-point value: " << QC6(-R, R) << endl;
     cout << "8-point value: " << QC8(-R, R) << endl;
     cout << "10-point value: " << QC10(-R, R) << endl;
