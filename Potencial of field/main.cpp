@@ -46,11 +46,10 @@ double potential(double r, double o) {
     w6 = 0.00001586546;
     w7 = 0.00000003170315;
     I1 = simpson(0.0, r, r, o);
-    cout << I1;
     I2 = w1 * f_2(x1, r, o) + w2 * f_2(x2, r, o) + w3 * f_2(x3, r, o) + w4 * f_2(x4, r, o) + w5 * f_2(x5, r, o) +
          w6 * f_2(x6, r, o) + w7 * f_2(x7, r, o);
-    cout << "I1: " << I1 << endl;
-    cout << "I2: " << I2 << endl;
+//    cout << "I1: " << I1 << endl;
+//    cout << "I2: " << I2 << endl;
     fi = (I1 + I2) * 3.0 / (8.0 * M_PI);
     return fi;
 }

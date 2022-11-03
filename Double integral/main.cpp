@@ -5,10 +5,10 @@
 using namespace std;
 
 ///@brief define A and B semi-axes, inner circle radius R and angle of rotate PHI
-#define A 1
-#define B 0.5
+#define A 0.5
+#define B 1
 #define R 1
-#define PHI M_PI/4
+//#define PHI M_PI/4
 
 double f(double x, double y) {
     #ifdef PHI

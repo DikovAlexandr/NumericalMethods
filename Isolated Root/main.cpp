@@ -118,16 +118,12 @@ void quadraticInterplWithOutRec(double x_, double _x, double eps, int n) {
             x = x2;
             if (f(x_) * f(x) <= 0) {
                 _x = x;
-            } else if (f(x) * f(_x) <= 0) {
-                x_ = x;
-            }
+            } else x_ = x;
         } else if (x_ <= x1 && x1 <= _x) {
             x = x1;
             if (f(x_) * f(x) <= 0) {
                 _x = x;
-            } else if (f(x) * f(_x) <= 0) {
-                x_ = x;
-            }
+            } else x_ = x;
         }
     }
     if (fabs(save - x) <= eps)
@@ -187,13 +183,13 @@ void wegstein(double x0, double eps, int n) {
 
 // Тело функции
 int main() {
-    double xLeft, xRight, epsilon = 0.00000001 /*numeric_limits<double>::epsilon()*/;
+    double xLeft, xRight, epsilon = 0.0001 /*numeric_limits<double>::epsilon()*/;
     int n;
     cout << "Enter function endpoints" << endl;
     cin >> xLeft >> xRight;
     // 2.5 and 3
     // Настройки точности вывода
-    const auto digits = 8;
+    const auto digits = 4;
     cout << setw(digits);
     cout << fixed << std::setprecision(digits);
     // Применение методов
