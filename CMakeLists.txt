@@ -11,5 +11,6 @@ add_executable(NumericalMethods
         #"Machine zero, epsilon and iInfinity/Float double properties.cpp"
         #"Numerical derivative/main.cpp"
         "Potencial of field/main.cpp"
-		#"Exponent/main.cpp"
+	#"Exponent/main.cpp"
+	#"Integral sin(x)+cos(x)/main.cpp"
         )
