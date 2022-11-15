@@ -10,7 +10,8 @@ add_executable(NumericalMethods
         #"Lagrange's polinom/main.cpp"
         #"Machine zero, epsilon and iInfinity/Float double properties.cpp"
         #"Numerical derivative/main.cpp"
-        "Potencial of field/main.cpp"
-	#"Exponent/main.cpp"
-	#"Integral sin(x)+cos(x)/main.cpp"
+        #"Potencial of field/main.cpp"
+		#"Exponent/main.cpp"
+		#"Integral sin(x)+cos(x)/main.cpp"
+		"RungeKutta/main.cpp"
         )
