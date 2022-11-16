@@ -29,6 +29,22 @@ double g2(double x, double y, double z, double E) {
     return -2.0 * (E - U) * y;
 }
 
+tuple<double, double, double> algorithm(double x, double y, double z, double E, double h, double (*g)(double, double, double, double)) {
+    double k1, l1, k2, l2, k3, l3, k4, l4;
+    k1 = f(x, y, z);
+    l1 = g(x, y, z, E);
+    k2 = f(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1);
+    l2 = g(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1, E);
+    k3 = f(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2);
+    l3 = g(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2, E);
+    k4 = f(x + h, y + h * k3, z + h * l3);
+    l4 = g(x + h, y + h * k3, z + h * l3, E);
+    y = y + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
+    z = z + h / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
+    x = x + h;
+    return make_tuple(x, y, z);
+}
+
 // Строим численное решение уравнения Шредингера методом Рунге-Кутты 4-го порядка
 pair<double, double>
 RK4(double x0, double y0, double z0, double h, double xs, double (*g)(double, double, double, double), double E) {
@@ -54,29 +70,13 @@ RK4(double x0, double y0, double z0, double h, double xs, double (*g)(double, do
                 z = z + (xs - x) / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
                 return make_pair(y, z);
             } else if (x + h == xs) {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1);
-                l2 = g(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1, E);
-                k3 = f(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2);
-                l3 = g(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2, E);
-                k4 = f(xs, y + h * k3, z + h * l3);
-                l4 = g(xs, y + h * k3, z + h * l3, E);
-                y = y + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + h / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                return make_pair(y, z);
+                tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
+                return make_pair(get<1>(temp), get<2>(temp));
             } else {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1);
-                l2 = g(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1, E);
-                k3 = f(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2);
-                l3 = g(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2, E);
-                k4 = f(x + h, y + h * k3, z + h * l3);
-                l4 = g(x + h, y + h * k3, z + h * l3, E);
-                y = y + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + h / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                x = x + h;
+                tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
+                x = get<1>(temp);
+                y = get<1>(temp);
+                z = get<2>(temp);
             }
         }
     } else {
@@ -94,29 +94,13 @@ RK4(double x0, double y0, double z0, double h, double xs, double (*g)(double, do
                 z = z + (xs - x) / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
                 return make_pair(y, z);
             } else if (x + h == xs) {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1);
-                l2 = g(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1, E);
-                k3 = f(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2);
-                l3 = g(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2, E);
-                k4 = f(xs, y + h * k3, z + h * l3);
-                l4 = g(xs, y + h * k3, z + h * l3, E);
-                y = y + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + h / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                return make_pair(y, z);
+                tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
+                return make_pair(get<1>(temp), get<2>(temp));
             } else {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1);
-                l2 = g(x + h / 2.0, y + h / 2.0 * k1, z + h / 2.0 * l1, E);
-                k3 = f(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2);
-                l3 = g(x + h / 2.0, y + h / 2.0 * k2, z + h / 2.0 * l2, E);
-                k4 = f(x + h, y + h * k3, z + h * l3);
-                l4 = g(x + h, y + h * k3, z + h * l3, E);
-                y = y + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + h / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                x = x + h;
+                tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
+                x = get<1>(temp);
+                y = get<1>(temp);
+                z = get<2>(temp);
             }
         }
     }
