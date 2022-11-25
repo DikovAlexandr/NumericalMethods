@@ -13,6 +13,6 @@ add_executable(NumericalMethods
         #"Potencial of field/main.cpp"
 		#"Exponent/main.cpp"
 		#"Integral sin(x)+cos(x)/main.cpp"
-		#"RungeKutta/main.cpp"
-		"Schrodinger/main.cpp"
+		"RungeKutta/main.cpp"
+		#"Schrodinger/main.cpp"
         )
