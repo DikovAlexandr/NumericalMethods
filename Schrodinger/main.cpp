@@ -11,11 +11,14 @@ double f(double x, double y, double z) {
     return z;
 }
 
+// U0 = 1, 10 - при 1 мало подходящих значений энегрии и волновых функций, при 10 много
+
 // Первый потенциал U0/ch(x)
 double g1(double x, double y, double z, double E) {
     double U0, U;
     //Задание потенциала
     U0 = 1.0;
+    // U0 = 10.0;
     U = -1.0 * U0 / cosh(x);
     return -2.0 * (E - U) * y;
 }
@@ -25,6 +28,7 @@ double g2(double x, double y, double z, double E) {
     double U0, U;
     //Задание потенциала
     U0 = 1.0;
+    // U0 = 10.0;
     U = -1.0 * U0 / pow(cosh(x), 2);
     return -2.0 * (E - U) * y;
 }
@@ -57,19 +61,7 @@ RK4(double x0, double y0, double z0, double h, double xs, double (*g)(double, do
     // xs это точка сшивки
     if (h > 0.0) {
         while (true){
-            if (x + h > xs) {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f((x + xs) / 2.0, y + (xs - x) / 2.0 * k1, z + (xs - x) / 2.0 * l1);
-                l2 = g((x + xs) / 2.0, y + (xs - x) / 2.0 * k1, z + (xs - x) / 2.0 * l1, E);
-                k3 = f((x + xs) / 2.0, y + (xs - x) / 2.0 * k2, z + (xs - x) / 2.0 * l2);
-                l3 = g((x + xs) / 2.0, y + (xs - x) / 2.0 * k2, z + (xs - x) / 2.0 * l3, E);
-                k4 = f(xs, y + (xs - x) * k3, z + (xs - x) * l3);
-                l4 = g(xs, y + (xs - x) * k3, z + (xs - x) * l3, E);
-                y = y + (xs - x) / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + (xs - x) / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                return make_pair(y, z);
-            } else if (x + h == xs) {
+            if (x + h >= xs) {
                 tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
                 return make_pair(get<1>(temp), get<2>(temp));
             } else {
@@ -81,19 +73,7 @@ RK4(double x0, double y0, double z0, double h, double xs, double (*g)(double, do
         }
     } else {
         while (true){
-            if (x + h < xs) {
-                k1 = f(x, y, z);
-                l1 = g(x, y, z, E);
-                k2 = f((x + xs) / 2.0, y + (xs - x) / 2.0 * k1, z + (xs - x) / 2.0 * l1);
-                l2 = g((x + xs) / 2.0, y + (xs - x) / 2.0 * k1, z + (xs - x) / 2.0 * l1, E);
-                k3 = f((x + xs) / 2.0, y + (xs - x) / 2.0 * k2, z + (xs - x) / 2.0 * l2);
-                l3 = g((x + xs) / 2.0, y + (xs - x) / 2.0 * k2, z + (xs - x) / 2.0 * l3, E);
-                k4 = f(xs, y + (xs - x) * k3, z + (xs - x) * l3);
-                l4 = g(xs, y + (xs - x) * k3, z + (xs - x) * l3, E);
-                y = y + (xs - x) / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-                z = z + (xs - x) / 6.0 * (l1 + 2.0 * l2 + 2.0 * l3 + l4);
-                return make_pair(y, z);
-            } else if (x + h == xs) {
+            if (x + h <= xs) {
                 tuple<double, double, double> temp = algorithm(x, y, z, E, h, g);
                 return make_pair(get<1>(temp), get<2>(temp));
             } else {
@@ -148,8 +128,6 @@ void graph(double E1, double E2, double (*g)(double, double, double , double)) {
 void energy(double (*g)(double, double, double, double)) {
     double E0, det0;
     double E1, det1;
-    int star;
-    star = 0;
     ofstream fout;
     ifstream in(R"(..\\..\\NumericalMethods\\Schrodinger\\Wronski.csv)");
     in >> E0 >> det0;
@@ -172,6 +150,6 @@ int main() {
     E1 = -2.0;
     E2 = 0.0;
     graph(E1, E2, g2);
-    energy(g2);
+    //energy(g2);
     return 0;
 }
