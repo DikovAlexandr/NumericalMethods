@@ -13,12 +13,12 @@ double f(double x, double y1, double y2) {
 
 // Линейное слогаемное в уравнении Шредингера
 double g(double x, double psi1, double psi2, double eigenEnergy) {
-    return psi1 * 2.0 * (eigenEnergy - 1.0 / cosh(x));
+    return psi1 * 2.0 * (eigenEnergy - 10.0 / cosh(x));
 }
 
 /*
 double g(double x, double psi1, double psi2, double eigenEnergy) {
-    return psi1 * 2.0 * (eigenEnergy - 1.0 / pow(cosh(x), 2));
+    return psi1 * 2.0 * (eigenEnergy - 10.0 / pow(cosh(x), 2));
 }
 */
 
@@ -44,21 +44,21 @@ pair<double, double> RK(double x, double psiN, double dPsiN, double h, double ei
 
 // Тело функции
 int main() {
-    const int N = 1000, M = 1000, M1 = 10;
+    const int N = 1000, M = 1000;
     double x0 = 1e-6;
     double a, b;
-    double hX, h2, hEnergy;
+    double hXLeft, hXRight, hEnergy;
     double psiN[3], dPsiN[3];
     // Началное и конечное значения энергии
-    double aEnergy = 0.0, bEnergy = 1.0;
+    double aEnergy = 0.0, bEnergy = 10.0;
     double xn, xm;
     // Границы по x
-    double xLeft = -0.5e2, xRight = -1 * xLeft;
+    double xRight = 50, xLeft = -1 * xRight;
     double psiM[3], dPsiM[3];
     double E, W[M + 1];
-    double psiLeft[N + 2][2], dPsiLeft[N + 1][2], psiRight[N + 2][2], dPsiRight[N + 1][2];
-    double Energy[N+2];
-    double S1[N+2], S2[N+2];
+    double psiLeft[N + 2][10], dPsiLeft[N + 2][10], psiRight[N + 2][10], dPsiRight[N + 2][10];
+    double Energy[N + 2];
+    double S1[N + 2], S2[N + 2];
 
     // Создаем файл для хранения значений энергии и вронскиана
     ofstream fout1;
@@ -73,7 +73,7 @@ int main() {
 
         b = x0;
         a = xLeft;
-        hX = (b - a) / N;
+        hXLeft = (b - a) / N;
         E = aEnergy + hEnergy * i;
 
         // Считаем что волновая функция имеет асимптотический вид
@@ -86,9 +86,9 @@ int main() {
         for (int k = 0; k <= N; ++k) {
             psiN[1] = psiN[2];
             dPsiN[1] = dPsiN[2];
-            psiN[2] = RK(xn, psiN[1], dPsiN[1], hX, E).first;
-            dPsiN[2] = RK(xn, psiN[1], dPsiN[1], hX, E).second;
-            xn = xLeft + hX * k;
+            psiN[2] = RK(xn, psiN[1], dPsiN[1], hXLeft, E).first;
+            dPsiN[2] = RK(xn, psiN[1], dPsiN[1], hXLeft, E).second;
+            xn = xLeft + hXLeft * k;
         }
 
         /////////////////////
@@ -97,7 +97,7 @@ int main() {
 
         b = xRight;
         a = x0;
-        hX = (a - b) / N;
+        hXLeft = (a - b) / N;
 
         psiM[2] = exp(-xRight * sqrt(2.0 * E));
         dPsiM[2] = -sqrt(2.0 * E) * exp(-xRight * sqrt(2.0 * E));
@@ -107,9 +107,9 @@ int main() {
         for (int k = 0; k <= N; ++k) {
             psiM[1] = psiM[2];
             dPsiM[1] = dPsiM[2];
-            psiM[2] = RK(xm, psiM[1], dPsiM[1], hX, E).first;
-            dPsiM[2] = RK(xm, psiM[1], dPsiM[1], hX, E).second;
-            xm = xRight + hX * k;
+            psiM[2] = RK(xm, psiM[1], dPsiM[1], hXLeft, E).first;
+            dPsiM[2] = RK(xm, psiM[1], dPsiM[1], hXLeft, E).second;
+            xm = xRight + hXLeft * k;
         }
 
         // Если значение энергии является особственным функции будут сшиваться
@@ -124,9 +124,9 @@ int main() {
     int n = 0;
     for (int i = 1; i <= M; ++i) {
         if (W[i] * W[i - 1] <= 0) {
-
             energyI = energyI + hEnergy;
             Energy[n] = energyI;
+            cout << Energy[n] << endl;
             n++;
         } else energyI = energyI + hEnergy;
     }
@@ -141,27 +141,27 @@ int main() {
 
         b = x0;
         a = xLeft;
-        hX = (b - a) / N;
+        hXLeft = (b - a) / N;
 
         // Волновая функция и ее производная на асимптотиках
-        psiLeft[1][i] = exp(xLeft * sqrt(2.0 * Energy[i]));
-        dPsiLeft[1][i] = sqrt(2.0 * Energy[n]) * exp(xLeft * sqrt(2.0 * Energy[i]));
+        psiLeft[0][i] = exp(xLeft * sqrt(2.0 * Energy[i]));
+        dPsiLeft[0][i] = sqrt(2.0 * Energy[n]) * exp(xLeft * sqrt(2.0 * Energy[i]));
         xn = xLeft;
 
-        for (int k = 1; k < N; ++k) {
-            psiLeft[k + 1][i] = RK(xn, psiLeft[k][i], dPsiLeft[k][i], hX, Energy[i]).first;
-            dPsiLeft[k + 1][i] = RK(xn, psiLeft[k][i], dPsiLeft[k][i], hX, Energy[i]).second;
-            xn = xLeft + hX * k;
+        for (int k = 0; k < N; ++k) {
+            psiLeft[k + 1][i] = RK(xn, psiLeft[k][i], dPsiLeft[k][i], hXLeft, Energy[i]).first;
+            dPsiLeft[k + 1][i] = RK(xn, psiLeft[k][i], dPsiLeft[k][i], hXLeft, Energy[i]).second;
+            xn = xLeft + hXLeft * k;
         }
 
-        psiLeft[N + 1][i] = RK(xn, psiLeft[N][i], dPsiLeft[N][i], hX, Energy[i]).first;
+        psiLeft[N][i] = RK(xn, psiLeft[N - 1][i], dPsiLeft[N - 1][i], hXLeft, Energy[i]).first;
 
         // Нормировка методом Симпсона
-        S1[i] = pow(psiLeft[1][i], 2) - pow(psiLeft[N + 1][i], 2);
-        for (int j = 2; j <= N; j += 2) {
+        S1[i] = pow(psiLeft[0][i], 2) - pow(psiLeft[N][i], 2);
+        for (int j = 1; j < N; j += 2) {
             S1[i] = S1[i] + 4.0 * pow(psiLeft[j][i], 2) + 2.0 * pow(psiLeft[j + 1][i], 2);
         }
-        S1[i] = S1[i] * hX / 3.0;
+        S1[i] = S1[i] * hXLeft / 3.0;
 
         ////////////////////
         // Функция справа //
@@ -169,57 +169,53 @@ int main() {
 
         b = xRight;
         a = x0;
-        h2 = (a - b) / N;
+        hXRight = (a - b) / N;
 
         // Волновая функция и ее производная на асимптотиках
-        psiRight[1][i] = exp(-xRight * sqrt(2.0 * Energy[i]));
-        dPsiRight[1][i] = -sqrt(2.0 * Energy[n]) * exp(-xRight * sqrt(2.0 * Energy[i]));
+        psiRight[0][i] = exp(-xRight * sqrt(2.0 * Energy[i]));
+        dPsiRight[0][i] = -sqrt(2.0 * Energy[n]) * exp(-xRight * sqrt(2.0 * Energy[i]));
         xm = xRight;
 
-        for (int k = 1; k < N; ++k) {
-            psiRight[k + 1][i] = RK(xm, psiRight[k][i], dPsiRight[k][i], h2, Energy[i]).first;
-            dPsiRight[k + 1][i] = RK(xm, psiRight[k][i], dPsiRight[k][i], h2, Energy[i]).second;
-            xm = xRight + h2 * k;
+        for (int k = 0; k < N; ++k) {
+            psiRight[k + 1][i] = RK(xm, psiRight[k][i], dPsiRight[k][i], hXRight, Energy[i]).first;
+            dPsiRight[k + 1][i] = RK(xm, psiRight[k][i], dPsiRight[k][i], hXRight, Energy[i]).second;
+            xm = xRight + hXRight * k;
         }
 
-        psiRight[N + 1][i] = RK(xm, psiRight[N][i], dPsiRight[N][i], h2, Energy[i]).first;
+        psiRight[N][i] = RK(xm, psiRight[N - 1][i], dPsiRight[N - 1][i], hXRight, Energy[i]).first;
 
         // Нормировка методом Симпсона
-        S2[i] = -pow(psiRight[1][i], 2) + pow(psiRight[N + 1][i], 2);
-        for (int j = 2; j <= N; ++j) {
+        S2[i] = -pow(psiRight[0][i], 2) + pow(psiRight[N][i], 2);
+        for (int j = 1; j < N; ++j) {
             S2[i] = S2[i] + 4.0 * pow(psiRight[j][i], 2) + 2.0 * pow(psiRight[j + 1][i], 2);
         }
-        S2[i] = -1 * S2[i] * h2 / 3.0;
-
+        S2[i] = -1 * S2[i] * hXRight / 3.0;
     }
 
-    // Значения норированной волновой функции слева
+    // Значения варьированной волновой функции слева
     ofstream fout2;
-    fout2.open(R"(..\\..\\SchrodingerOneDimension\\PsiLeft.csv)");
-    for (int i = 1; i <= N + 1; ++i) {
-        xn = xLeft + hX * (i - 1);
+    fout2.open(R"(..\\..\\SchrodingerOneDimension\\Psi.csv)");
+    for (int i = 0; i <= N; ++i) {
+        xn = xLeft + hXLeft * i;
         fout2 << xn;
         for (int j = 0; j < n; ++j) {
             //psiLeft[i][j] = pow(psiLeft[i][j], 2) / (S1[j] + S2[j]);
-            psiLeft[i][j] = psiLeft[i][j] / (S1[j] + S2[j]);
+            psiLeft[i][j] = psiLeft[i][j] / sqrt(S1[j] + S2[j]);
             fout2 << " " << psiLeft[i][j];
         }
         fout2 << endl;
     }
-    fout2.close();
 
-    // Значения норированной волновой функции справа
-    ofstream fout3;
-    fout3.open(R"(..\\..\\SchrodingerOneDimension\\PsiRight.csv)");
-    for (int i = 1; i <= N + 1; ++i) {
-        xm = xRight + h2 * (i - 1);
-        fout3 << xm;
+    // Значения варьированной волновой функции справа
+    for (int i = 0; i <= N; ++i) {
+        xm = x0 + (-1) * hXRight * i;
+        fout2 << xm;
         for (int j = 0; j < n; ++j) {
             // psiRight[i][j] = pow(psiRight[i][j], 2) / (S1[j] + S2[j]);
-            psiRight[i][j] = psiRight[i][j] / (S1[j] + S2[j]);
-            fout3 << " " << psiRight[i][j];
+            psiRight[N - i][j] = psiRight[N - i][j] / sqrt(S1[j] + S2[j]);
+            fout2 << " " << psiRight[N - i][j];
         }
-        fout3 << endl;
+        fout2 << endl;
     }
-    fout3.close();
+    fout2.close();
 }
