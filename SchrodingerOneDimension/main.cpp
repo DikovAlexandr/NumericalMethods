@@ -16,11 +16,9 @@ double g(double x, double psi1, double psi2, double eigenEnergy) {
     return psi1 * 2.0 * (eigenEnergy - 10.0 / cosh(x));
 }
 
-/*
-double g(double x, double psi1, double psi2, double eigenEnergy) {
-    return psi1 * 2.0 * (eigenEnergy - 10.0 / pow(cosh(x), 2));
-}
-*/
+//double g(double x, double psi1, double psi2, double eigenEnergy) {
+//    return psi1 * 2.0 * (eigenEnergy - 10.0 / pow(cosh(x), 2));
+//}
 
 // Метод Кунге-Кутта для решения системы уравнений
 pair<double, double> RK(double x, double psiN, double dPsiN, double h, double eigenEnergy) {
@@ -44,8 +42,8 @@ pair<double, double> RK(double x, double psiN, double dPsiN, double h, double ei
 
 // Тело функции
 int main() {
-    const int N = 1000, M = 1000;
-    double x0 = 1e-6;
+    const int N = 10000, M = 10000;
+    double x0 = 0.005;
     double a, b;
     double hXLeft, hXRight, hEnergy;
     double psiN[3], dPsiN[3];
@@ -53,10 +51,12 @@ int main() {
     double aEnergy = 0.0, bEnergy = 10.0;
     double xn, xm;
     // Границы по x
+
     double xRight = 50, xLeft = -1 * xRight;
     double psiM[3], dPsiM[3];
     double E, W[M + 1];
-    double psiLeft[N + 2][10], dPsiLeft[N + 2][10], psiRight[N + 2][10], dPsiRight[N + 2][10];
+
+    float psiLeft[N + 2][10], dPsiLeft[N + 2][10], psiRight[N + 2][10], dPsiRight[N + 2][10];
     double Energy[N + 2];
     double S1[N + 2], S2[N + 2];
 
@@ -195,13 +195,17 @@ int main() {
     // Значения варьированной волновой функции слева
     ofstream fout2;
     fout2.open(R"(..\\..\\SchrodingerOneDimension\\Psi.csv)");
+    int sign;
     for (int i = 0; i <= N; ++i) {
         xn = xLeft + hXLeft * i;
         fout2 << xn;
         for (int j = 0; j < n; ++j) {
             //psiLeft[i][j] = pow(psiLeft[i][j], 2) / (S1[j] + S2[j]);
             psiLeft[i][j] = psiLeft[i][j] / sqrt(S1[j] + S2[j]);
-            fout2 << " " << psiLeft[i][j];
+            if ((n - j + 1)%2 != 0) sign = -1;
+            else sign = 1;
+            fout2 << " " << sign * psiLeft[i][j];
+            //fout2 << " " << sign * dPsiLeft[i][j];
         }
         fout2 << endl;
     }
@@ -214,6 +218,7 @@ int main() {
             // psiRight[i][j] = pow(psiRight[i][j], 2) / (S1[j] + S2[j]);
             psiRight[N - i][j] = psiRight[N - i][j] / sqrt(S1[j] + S2[j]);
             fout2 << " " << psiRight[N - i][j];
+            //fout2 << " " << dPsiRight[N - i][j];
         }
         fout2 << endl;
     }
