@@ -11,14 +11,14 @@ double f(double x, double y1, double y2) {
     return y2;
 }
 
-// Линейное слогаемное в уравнении Шредингера
-double g(double x, double psi1, double psi2, double eigenEnergy) {
-    return psi1 * 2.0 * (eigenEnergy - 10.0 / cosh(x));
-}
-
+//// Линейное слогаемное в уравнении Шредингера
 //double g(double x, double psi1, double psi2, double eigenEnergy) {
-//    return psi1 * 2.0 * (eigenEnergy - 10.0 / pow(cosh(x), 2));
+//    return psi1 * 2.0 * (eigenEnergy - 10.0 / cosh(x));
 //}
+
+double g(double x, double psi1, double psi2, double eigenEnergy) {
+    return psi1 * 2.0 * (eigenEnergy - 10.0 / pow(cosh(x), 2));
+}
 
 // Метод Кунге-Кутта для решения системы уравнений
 pair<double, double> RK(double x, double psiN, double dPsiN, double h, double eigenEnergy) {
@@ -52,13 +52,13 @@ int main() {
     double xn, xm;
     // Границы по x
 
-    double xRight = 50, xLeft = -1 * xRight;
+    double xRight = 25, xLeft = -1 * xRight;
     double psiM[3], dPsiM[3];
-    double E, W[M + 1];
-
+    double E;
+    float W[M + 1];
     float psiLeft[N + 2][10], dPsiLeft[N + 2][10], psiRight[N + 2][10], dPsiRight[N + 2][10];
-    double Energy[N + 2];
-    double S1[N + 2], S2[N + 2];
+    float Energy[N + 2];
+    float S1[N + 2], S2[N + 2];
 
     // Создаем файл для хранения значений энергии и вронскиана
     ofstream fout1;
