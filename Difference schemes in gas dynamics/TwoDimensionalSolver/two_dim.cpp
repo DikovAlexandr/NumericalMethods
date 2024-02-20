@@ -9,55 +9,6 @@
 #include <vector>
 #include <fstream>
 
-/* ПОСТАНОВКА ЗАДАЧИ */
-void InitialDataVar7(double**& x, double**& p, double**& rho, double***& v, 
-                                    double**& u, double**& e, int Nx, int Ny, double gamma,
-                                     double R, double x_centr, double y_centr, double Lx, double Ly)
-{
-    double ls = 0.4*Lx;
-    double P1 = 3 * 1E5;
-    double rho1 = 3;
-    double v1 = 0;
-    double e1 = P1 / rho1 / (gamma - 1);
-
-    double P0 = 1E5;
-    double rho0 = 1;
-    double e0 = P0 / rho0 / (gamma - 1);
-
-    double rho2 = 1E5;
-    double e2 = P0 / rho2 / (gamma - 1); 
-
-
-    for (int i = 0; i <= Nx + 1; i++) {
-        for (int j = 0; j <= Ny + 1; j++) {
-            if (x[0][i] < ls){
-                p[i][j] = P1;
-                rho[i][j] = rho1;
-                v[0][i][j] = v1;
-                v[1][i][j] = v1;
-                e[i][j] = e1 + (v[0][i][j] * v[0][i][j] + v[1][i][j] * v[1][i][j]) / 2.;
-                u[i][j] = e1;
-            }
-            else{
-                p[i][j] = P0;
-                rho[i][j] = rho0;
-                v[0][i][j] = v1;
-                v[1][i][j] = v1;
-                e[i][j] = e0 + (v[0][i][j] * v[0][i][j] + v[1][i][j] * v[1][i][j]) / 2.;
-                u[i][j] = e0;
-            }
-            if (pow(x[0][i] - 0.65*Lx, 2) + pow(x[1][j] - 0.5*Ly, 2) <= pow(0.25*Ly, 2)){
-                p[i][j] = P0;
-                rho[i][j] = rho2;
-                v[0][i][j] = v1;
-                v[1][i][j] = v1;
-                e[i][j] = e2 + (v[0][i][j] * v[0][i][j] + v[1][i][j] * v[1][i][j]) / 2.;
-                u[i][j] = e2;
-            }
-        }
-    }
-}
-
 
 /* ПАРАМЕТРЫ */
 struct PVR {
@@ -96,23 +47,23 @@ void read_parameters(struct Parameters* params) {
     params->g = 1.4;
     /* НАЧАЛЬНЫЕ УСЛОВИЯ */
     params->ax = 0.0;
-    params->bx = 1;
+    params->bx = 10;
     params->ay = 0.0;
     params->by = 1;
     /* ПАРАМЕТРЫ РАСЧЕТА*/
     params->cells_number_x = 100;
     params->cells_number_y = 100;
-    params->stop_time = 2;
+    params->stop_time = 0.015;
     params->CFL = 0.2;
     params->S_type = 1;
-    params->fo = 10000;
+    params->fo = 100;
     params->type_b_down = 0;
     params->type_b_up = 0;
     params->type_b_left = 0;
     params->type_b_right = 0;
 
     params->gx = 0;
-    params->gy = -100;
+    params->gy = 0;
 
 }
 
@@ -711,6 +662,54 @@ void Out(struct Parameters* params, double time, double* x, double* y, double** 
     }
 }
 
+/* ПОСТАНОВКА ЗАДАЧИ */
+void InitialData(Parameters* params, double **p, double **rho, double **vx, double **vy, double *xc, double *yc, double **m, double **impx, double **impy, double **e)
+{
+    double ls = 4;
+    double x_center = 7.0;
+    double y_center = 0.5;
+    double r = 0.1;
+
+    double rho0 = 3;
+    double P0 = 3 * 1E5;
+    double vx0 = 0;
+    double vy0 = 0;
+
+    double rho1 = 1;
+    double P1 = 1E5;
+    double vx1 = 0;
+    double vy1 = 0;
+    
+    double rho2 = 1E5;
+    double P2 = 1E5;
+    double vx2 = 0;
+    double vy2 = 0;
+
+    for (int i = 0; i < params->cells_number_x; i++) {
+        for (int j = 0; j < params->cells_number_y; j++) {
+            if (xc[i] < ls){
+                p[i][j] = P0;
+                rho[i][j] = rho0;
+                vx[i][j] = vx0;
+                vy[i][j] = vy0;
+            }
+            else{
+                p[i][j] = P1;
+                rho[i][j] = rho1;
+                vx[i][j] = vx1;
+                vy[i][j] = vy1;
+            }
+            if (pow(xc[i] - x_center, 2) + pow(yc[j] - y_center, 2) <= pow(r, 2)){
+                p[i][j] = P2;
+                rho[i][j] = rho2;
+                vx[i][j] = vx2;
+                vy[i][j] = vy2;
+            }
+            Convert_noncons_to_cons(params, p[i][j], vx[i][j], vy[i][j], rho[i][j], m[i][j], impx[i][j], impy[i][j], e[i][j]);
+        }
+    }
+}
+
 
 int main() {
     struct Parameters params;   /* структура с параметрами вычислительного эксперимента  */
@@ -754,7 +753,7 @@ int main() {
     /* определение координат центров ячеек сетки */
     Build_grid(&params, xc, yc, x, y);
     /* начальные условия */
-    Init_solution_circle(&params, xc, yc, p, vx, vy, r, m, impx, impy, e);
+    InitialData(&params, p, r, vx, vy, xc, yc, m, impx, impy, e);
     /* вывод в файл начального распределения*/
     Out(&params, time, xc, yc, p, vx, vy, r);
     /* цикл по времени*/
@@ -1005,7 +1004,7 @@ int main() {
         if (step_number % fo == 0) {
         // if (time >= 0.119363) {
             Out(&params, time, xc, yc, p, vx, vy, r);
-         //   break;
+        //   break;
         }
     }
     /* освобождение памяти */

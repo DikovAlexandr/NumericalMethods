@@ -4,3 +4,4 @@ build
 cmake-*
 *.exe
 Numerical methods in quantum mechanics/Matrix Schrodinger/eigen/*
+Difference schemes in gas dynamics/MapleCode/*
